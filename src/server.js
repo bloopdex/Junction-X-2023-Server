@@ -192,22 +192,24 @@ mqttClient.on("message", (topic, message) => {
     uavPrefix === "uav1" &&
     (topic === "uav1/gps/lat" || topic === "uav1/gps/lon")
   ) {
-    const lat = parseFloat(message.toString());
-    const lon = parseFloat(message.toString()); // Replace with the actual longitude message topic
-    io.emit(`gpsData-${uavPrefix}`, { lat, lon });
+    const batInf = uav1.batInf;
+    const gpsdata = uav1.gpsdata;
+    const uavstat = uav1.uavstat;
+    io.emit(`gpsData-${uavPrefix}`, { batInf, gpsdata, uavstat });
   } else if (
     uavPrefix === "uav2" &&
     (topic === "uav2/gps/lat" || topic === "uav2/gps/lon")
   ) {
-    const lat = parseFloat(message.toString());
-    const lon = parseFloat(message.toString()); // Replace with the actual longitude message topic
-    io.emit(`gpsData-${uavPrefix}`, { lat, lon });
+    const batInf = uav1.batInf;
+    const gpsdata = uav1.gpsdata;
+    const uavstat = uav1.uavstat;
+    io.emit(`gpsData-${uavPrefix}`, { batInf, gpsdata, uavstat });
   }
 });
 
 // Socket.io Connection
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  console.log("A user connected to socket.io");
 
   // Handle disconnection
   socket.on("disconnect", () => {
