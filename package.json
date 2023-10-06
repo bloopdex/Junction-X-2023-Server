@@ -1,0 +1,36 @@
+{
+  "name": "junction-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "heroku-postbuild": "npm run build",
+    "start": "nodemon",
+    "inspect": "nodemon --inspect src/server.ts",
+    "test": "jest",
+    "lint": "npm run lint:js ",
+    "lint:eslint": "eslint --ignore-path .gitignore --ext .ts",
+    "lint:js": "npm run lint:eslint src/",
+    "lint:fix": "npm run lint:js -- --fix"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "mqtt": "^5.1.0",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.14",
+    "@types/express": "^4.17.18",
+    "@types/morgan": "^1.9.6",
+    "@types/node": "^20.8.2",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
