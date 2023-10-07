@@ -7,7 +7,7 @@ import cors from "cors";
 // MQTT Broker Address
 const brokerUrl = "mqtt://13.38.173.241:1883";
 
-let uavObj = {
+let uav1 = {
   batInf: {
     id: "",
     vl: "",
@@ -30,9 +30,29 @@ let uavObj = {
     fm: "",
   },
 };
-
-let uav1 = { ...uavObj };
-let uav2 = { ...uavObj };
+let uav2 = {
+  batInf: {
+    id: "",
+    vl: "",
+    pt: "",
+  },
+  gpsdata: {
+    fx: "",
+    ns: "",
+    lat: "",
+    lon: "",
+    abs: "",
+    rel: "",
+  },
+  uavstat: {
+    in_air: "",
+    armed: "",
+    state: "",
+    mav_msg: "",
+    health: "",
+    fm: "",
+  },
+};
 
 // Create an MQTT Client
 const mqttClient = connect(brokerUrl);
@@ -107,6 +127,7 @@ mqttClient.on("connect", () => {
 
 // Handle Incoming MQTT Messages
 mqttClient.on("message", (topic, message) => {
+  console.log(`Received message on ${topic}: ${message.toString()}`);
   //filter by topic to uav1 and uav2
   if (topic.split("/")[0] === "uav1") {
     if (topic.split("/")[1] === "bat") {
@@ -144,7 +165,8 @@ mqttClient.on("message", (topic, message) => {
     } else if (topic.split("/")[1] === "fm") {
       uav1.uavstat.fm = message.toString();
     }
-  } else if (topic.split("/")[0] === "uav2") {
+  }
+  if (topic.split("/")[0] === "uav2") {
     if (topic.split("/")[1] === "bat") {
       if (topic.split("/")[2] === "id") {
         uav2.batInf.id = message.toString();
@@ -181,29 +203,25 @@ mqttClient.on("message", (topic, message) => {
       uav2.uavstat.fm = message.toString();
     }
   }
-  console.log("uav1:", uav1);
-  console.log("uav2:", uav2);
+
+  console.log(uav1);
+  console.log(uav2);
 
   // Extract the UAV prefix (uav1 or uav2) from the topic
   const uavPrefix = topic.split("/")[0];
 
   // Check if the topic is GPS data for uav1 or uav2
-  if (
-    uavPrefix === "uav1" &&
-    (topic === "uav1/gps/lat" || topic === "uav1/gps/lon")
-  ) {
-    const batInf = uav1.batInf;
-    const gpsdata = uav1.gpsdata;
-    const uavstat = uav1.uavstat;
-    io.emit(`gpsData-${uavPrefix}`, { batInf, gpsdata, uavstat });
-  } else if (
-    uavPrefix === "uav2" &&
-    (topic === "uav2/gps/lat" || topic === "uav2/gps/lon")
-  ) {
-    const batInf = uav1.batInf;
-    const gpsdata = uav1.gpsdata;
-    const uavstat = uav1.uavstat;
-    io.emit(`gpsData-${uavPrefix}`, { batInf, gpsdata, uavstat });
+  if (uavPrefix === "uav1") {
+    const batInf1 = uav1.batInf;
+    const gpsdata1 = uav1.gpsdata;
+    const uavstat1 = uav1.uavstat;
+    io.emit(`gpsData-uav1`, { batInf1, gpsdata1, uavstat1 });
+  }
+  if (uavPrefix === "uav2") {
+    const batInf2 = uav2.batInf;
+    const gpsdata2 = uav2.gpsdata;
+    const uavstat2 = uav2.uavstat;
+    io.emit(`gpsData-uav2`, { batInf2, gpsdata2, uavstat2 });
   }
 });
 
